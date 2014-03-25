@@ -25,19 +25,15 @@
     <structMap ID="smd-00000001" TYPE="INTELLECTUAL_ENTITY">
         <div>
             <div TYPE="INTELLECTUAL_ENTITY" ID="s-ie-00000001" DMDID="dmd-00000001 dmd-00000002" ADMID="rmd-00000001" ORDER="1" ORDERLABEL="V1">
-                <mptr LOCTYPE="URL" xlink:type="simple" xlink:href="../../../se/nyu_aco000177/data/nyu_aco000177_mets.xml#s-ie-00000001"/>
+                <mptr LOCTYPE="URL" xlink:type="simple" xlink:href="nyu_aco000177_mets.xml#s-ie-00000001"/>
 	    </div>
             <div TYPE="INTELLECTUAL_ENTITY" ID="s-ie-00000002" DMDID="dmd-00000001 dmd-00000002" ADMID="rmd-00000001" ORDER="2" ORDERLABEL="V2">
-                <mptr LOCTYPE="URL" xlink:type="simple" xlink:href="../../../se/nyu_aco000177/data/nyu_aco000178_mets.xml#s-ie-00000001"/>
+                <mptr LOCTYPE="URL" xlink:type="simple" xlink:href="nyu_aco000178_mets.xml#s-ie-00000001"/>
 	    </div>
             <div TYPE="INTELLECTUAL_ENTITY" ID="s-ie-00000003" DMDID="dmd-00000001 dmd-00000002" ADMID="rmd-00000001" ORDER="3" ORDERLABEL="V3">
-                <mptr LOCTYPE="URL" xlink:type="simple" xlink:href="../../../se/nyu_aco000177/data/nyu_aco000179_mets.xml#s-ie-00000001"/>
 	    </div>
             <div TYPE="INTELLECTUAL_ENTITY" ID="s-ie-00000004" DMDID="dmd-00000001 dmd-00000002" ADMID="rmd-00000001" ORDER="4" ORDERLABEL="V4">
-                <mptr LOCTYPE="URL" xlink:type="simple" xlink:href="../../../se/nyu_aco000177/data/nyu_aco000180_mets.xml#s-ie-00000001"/>
-	    </div>
-            <div TYPE="INTELLECTUAL_ENTITY" ID="s-ie-00000005" DMDID="dmd-00000001 dmd-00000002" ADMID="rmd-00000001" ORDER="5" ORDERLABEL="V5">
-                <mptr LOCTYPE="URL" xlink:type="simple" xlink:href="../../../se/nyu_aco000177/data/nyu_aco000181_mets.xml#s-ie-00000001"/>
+                <mptr LOCTYPE="URL" xlink:type="simple" xlink:href="nyu_aco000180_mets.xml#s-ie-00000001"/>
 	    </div>
 	</div>
     </structMap>
