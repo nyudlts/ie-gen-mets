@@ -209,11 +209,14 @@ end
 
 
 def print_usage
-  $stderr.puts "Usage: #{$0} <object id> <source entity type> " +
-    "<binding orientation> <scan order> <read order> " +
-    "<path-to-text dir>"
+  $stderr.puts "Usage: #{$0} <object id> <path to ie> <mptr 1> [<mptr 2>|'MISSING' ...]"
+  $stderr.puts "   <object id>   : R* identifier. Will be inserted into METS @OBJID"
+  $stderr.puts "   <path to ie>  : path to the directory containing the IE files"
+  $stderr.puts "   <mptr 1>      : METS mptr string pointing to the first Source Entity structMap"
+  $stderr.puts "   <mptr 2...n>  : METS mptr string pointing to the second Source Entity structMap"
+  $stderr.puts "   'UNAVAIL'     : this portion of the intellectual entity is not available"
   $stderr.puts "   e.g., "
-  $stderr.puts "   ruby #{$0} 'nyu_aco000003' 'SOURCE_ENTITY:TEXT' 'VERTICAL' 'LEFT_TO_RIGHT' 'RIGHT_TO_LEFT'  /content/prod/rstar/content/nyu/aco/wip/se/nyu_aco000003/data > foo_mets.xml"
+  $stderr.puts "   ruby #{$0} '6efa1021-7453-4150-8d4a-705899530d8e' /path/to/ie 'nyu_aco000177_mets.xml#s-ie-00000001' 'UNAVAIL' 'nyu_aco000179_mets.xml#s-ie-00000001'"
 end
 
 #------------------------------------------------------------------------------
