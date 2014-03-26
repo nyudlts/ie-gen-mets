@@ -16,7 +16,7 @@
 # XML emit methods:
 #------------------------------------------------------------------------------
 def emit_template_version
-  puts '<?ie-wip-template version="info:nyu/dl/v1.0/templates/ie/wip/v0.0.1"?>'
+  puts '  <?ie-wip-template version="info:nyu/dl/v1.0/templates/ie/wip/v0.0.1"?>'
 end
 
 def emit_alt_record_id(h)
@@ -55,6 +55,22 @@ def emit_mets_hdr(create  = Time.now.utc.strftime("%FT%TZ"),
         </agent>
     </metsHdr>
   HERE_DOC_EOF
+end
+
+def emit_mets_hdr_open(create  = Time.now.utc.strftime("%FT%TZ"),
+                  lastmod = Time.now.utc.strftime("%FT%TZ"),
+                  status  = "DRAFT")
+  puts %|  <metsHdr CREATEDATE="#{create}" LASTMODDATE="#{lastmod}" RECORDSTATUS="#{status}">|
+end
+
+def emit_mets_hdr_close
+  puts "  </metsHdr>"
+end
+
+def emit_agent(h)
+  puts %Q{        <agent ROLE="#{h[:role]}" TYPE="#{h[:type]}"> }
+  puts %Q{            <name>#{h[:name]}</name> }
+  puts %Q{        </agent>}
 end
 
 def emit_dmd_marcxml(fname)
@@ -174,8 +190,6 @@ def get_md_file_inventory(dir)
     mods:        '_mods.xml',
     marcxml:     '_marcxml.xml',
     metsrights:  '_metsrights.xml',
-    eoc:         '_eoc.csv',
-    target:      '_ztarget_m.tif'
   }
 
   fhash  = {}
@@ -204,23 +218,20 @@ end
 
 #------------------------------------------------------------------------------
 # obj_id     = ARGV[0]
-# se_type    = ARGV[1]
-# binding    = ARGV[2]
-# scan_order = ARGV[3]
-# read_order = ARGV[4]
-# src_dir    = ARGV[5]
+# src_dir    = ARGV[1]
+# mptr_1     = ARGV[2]
+# [mptr_2    = ARGV[3]]
+# [mptr_3    = ARGV[4]]
+# ...
+# [mptr_n    = ARGV[n + 1]]
 #..............................................................................
 def validate_and_extract_args(args_in)
-  valid_se_types    = %w(SOURCE_ENTITY:TEXT)
-  valid_bindings    = %w(VERTICAL HORIZONTAL)
-  valid_scan_orders = %w(LEFT_TO_RIGHT RIGHT_TO_LEFT TOP_TO_BOTTOM BOTTOM_TO_TOP)
-  valid_read_orders = %w(LEFT_TO_RIGHT RIGHT_TO_LEFT TOP_TO_BOTTOM BOTTOM_TO_TOP)
 
   args_out = {}
   errors   = []
 
   # argument count correct?
-  unless args_in.length == 6
+  unless args_in.length >= 3
     $stderr.puts "incorrect number of arguments"
     print_usage
     exit 1
@@ -229,28 +240,8 @@ def validate_and_extract_args(args_in)
   # assume object identifier present because arg count is correct
   args_out[:obj_id]  = args_in[0]
 
-  # construct array to validate arguments with controlled vocabularies
-  # idx:    index for value in args_in
-  # key:    key   for          args_out hash
-  # values: controlled vocabulary against which to validate
-  # msg:    text for error message
-  [{idx: 1, key: :se_type,    values: valid_se_types,    msg: "se type"},
-   {idx: 2, key: :binding,    values: valid_bindings,    msg: "binding orientation"},
-   {idx: 3, key: :scan_order, values: valid_scan_orders, msg: "scan order"},
-   {idx: 4, key: :read_order, values: valid_read_orders, msg: "read order"}].each do |x|
-
-    # extract the candidate value
-    candidate = args_in[x[:idx]]
-
-    if x[:values].include?(candidate)
-      args_out[x[:key]] = candidate
-    else
-      errors << "incorrect #{x[:msg]} : #{candidate}"
-    end
-  end
-
   # test directory
-  candidate = args_in[5]
+  candidate = args_in[1]
   if Dir.exists?(candidate)
     args_out[:dir] = candidate
   else
@@ -259,23 +250,11 @@ def validate_and_extract_args(args_in)
     exit 1
   end
 
-
-  # assemble file lists
-  master_files = get_master_files(args_out[:dir])
-  dmaker_files = get_dmaker_files(args_out[:dir])
-  slot_list    = gen_slot_list(args_out[:dir])
-  begin
-    assert_master_dmaker_match!(master_files, dmaker_files)
-  rescue Exception => e
-    errors << "#{e.message}"
-  end
-
-  args_out[:master_files] = master_files
-  args_out[:dmaker_files] = dmaker_files
-  args_out[:slot_list]    = slot_list
+  # extract list of mptrs
+  args_out[:mptrs] = args_in[2..-1]
 
   begin
-    md_files = get_md_file_inventory(args_in[5])
+    md_files = get_md_file_inventory(args_out[:dir])
   rescue Exception => e
     errors << "problem with metadata files: #{e.message}"
   end
@@ -292,35 +271,6 @@ def validate_and_extract_args(args_in)
 end
 
 
-def get_master_files(dir)
-  get_files(dir, '*_m.tif', /.+_ztarget_m.tif/)
-end
-
-def get_dmaker_files(dir)
-  get_files(dir, '*_d.tif')
-end
-
-def gen_slot_list(dir)
-  # d files map one-to-one to the pages in the text
-  slots = get_files(dir, '*_d.tif')
-  slots.collect {|s| s.sub(/_d.tif\z/,'')}
-end
-
-def assert_master_dmaker_match!(m, d)
-  raise "mismatch in master / dmaker file count" unless m.length == d.length
-  errors = []
-  m.each_index do |i|
-    m_base = m[i].sub(/_m.tif\z/,'')
-    d_base = d[i].sub(/_d.tif\z/,'')
-    errors << "prefix mismatch: #{m[i]} #{d[i]}" unless m_base == d_base
-  end
-  unless errors.empty?
-    estr = errors.join("\n")
-    raise "mismatches in master / dmaker files:\n #{estr}"
-  end
-end
-
-
 #------------------------------------------------------------------------------
 # MAIN
 #------------------------------------------------------------------------------
@@ -330,26 +280,20 @@ md_files = args[:md_files]
 emit_xml_header
 emit_mets_open(args[:obj_id])
 emit_template_version
-emit_mets_hdr
+emit_mets_hdr_open
+emit_agent({role: "DISSEMINATOR", type: "ORGANIZATION", name: "New York University Libraries"})
+emit_agent({role: "CREATOR", type: "INDIVIDUAL", name: "Joseph G. Pawletko"})
+emit_alt_record_id({type: "NYU-DL-RSTAR", id: args[:obj_id]})
+emit_mets_hdr_close
 emit_dmd_marcxml(md_files[:marcxml])
 emit_dmd_mods(md_files[:mods])
 emit_amd_sec_open
 emit_rights_md(md_files[:metsrights])
-emit_digiprov_target(md_files[:target])
-emit_digiprov_eoc(md_files[:eoc])
 emit_amd_sec_close
-emit_file_sec_open
-emit_file_grp_master_open
-emit_files(args[:master_files])
-emit_file_grp_close
-emit_file_grp_dmaker_open
-emit_files(args[:dmaker_files])
-emit_file_grp_close
-emit_file_sec_close
 emit_struct_map_open(args)
 emit_struct_map_div_open
 emit_struct_map_inner_div_open
-emit_struct_map_slot_divs(args[:slot_list])
+#emit_struct_map_slot_divs(args[:slot_list])
 emit_struct_map_inner_div_close
 emit_struct_map_div_close
 emit_struct_map_close
