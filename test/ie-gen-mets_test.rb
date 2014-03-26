@@ -52,7 +52,8 @@ class TestIeGenMets < Test::Unit::TestCase
       new = new_xml_a[i].strip
       old = old_xml_a[i].strip
 
-      # replace dates
+      # strip date-time stamps b/c canonical will have different timestamp than
+      # current test pass
       if /metsHdr/.match(new)
         timestamp_regex = /[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z/
         new.gsub!(timestamp_regex,'')
