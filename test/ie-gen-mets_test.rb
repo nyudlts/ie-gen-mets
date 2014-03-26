@@ -7,13 +7,13 @@ class TestIeGenMets < Test::Unit::TestCase
   VALID_IE_PATH = 'test/ies/valid'
   EMPTY_IE_PATH = 'test/ies/empty-dir'
   CANONICAL_XML  = 'test/canonical/valid_mets.xml'
-  MPTR_1  = 'nyu_aco000177_mets.xml#s-ie-00000001'
-  MPTR_2  = 'nyu_aco000178_mets.xml#s-ie-00000001'
-  UNAVAIL = 'UNAVAIL'
-  MPTR_4  = 'nyu_aco000180_mets.xml#s-ie-00000001'
+  PART_1  = 'nyu_aco000177_mets.xml#s-ie-00000001:V1'
+  PART_2  = 'nyu_aco000178_mets.xml#s-ie-00000001:V2'
+  UNAVAIL = 'UNAVAIL:V3'
+  PART_4  = 'nyu_aco000180_mets.xml#s-ie-00000001:V4'
 
   def test_exit_status_with_valid_text
-    o, e, s = Open3.capture3("#{COMMAND} '6efa1021-7453-4150-8d4a-705899530d8e' #{VALID_IE_PATH} #{MPTR_1} #{MPTR_2} #{UNAVAIL} #{MPTR_4}")
+    o, e, s = Open3.capture3("#{COMMAND} '6efa1021-7453-4150-8d4a-705899530d8e' #{VALID_IE_PATH} #{PART_1} #{PART_2} #{UNAVAIL} #{PART_4}")
     assert(s == 0, "incorrect exit status")
     assert_match(/<mets xmlns/, o, "no mets output detected")
   end
@@ -26,14 +26,14 @@ class TestIeGenMets < Test::Unit::TestCase
   end
 
   def test_with_invalid_dir
-    o, e, s = Open3.capture3("#{COMMAND} '6efa1021-7453-4150-8d4a-705899530d8e' invalid-dir-path #{MPTR_1}")
+    o, e, s = Open3.capture3("#{COMMAND} '6efa1021-7453-4150-8d4a-705899530d8e' invalid-dir-path #{PART_1}")
     assert(s != 0, "incorrect exit status")
     assert(o == '')
     assert_match(/directory does not exist/, e, 'unexpected error message')
   end
 
   def test_missing_md_files
-    o, e, s = Open3.capture3("#{COMMAND} '6efa1021-7453-4150-8d4a-705899530d8e' #{EMPTY_IE_PATH} #{MPTR_1}")
+    o, e, s = Open3.capture3("#{COMMAND} '6efa1021-7453-4150-8d4a-705899530d8e' #{EMPTY_IE_PATH} #{PART_1}")
     assert(s != 0)
     assert(o == '')
     assert_match(/missing or too many files ending in _mods\.xml/, e)
@@ -42,7 +42,7 @@ class TestIeGenMets < Test::Unit::TestCase
   end
 
   def test_output_with_valid_text
-    new_xml, e, s = Open3.capture3("#{COMMAND} '6efa1021-7453-4150-8d4a-705899530d8e' #{VALID_IE_PATH} #{MPTR_1} #{MPTR_2} #{UNAVAIL} #{MPTR_4}")
+    new_xml, e, s = Open3.capture3("#{COMMAND} '6efa1021-7453-4150-8d4a-705899530d8e' #{VALID_IE_PATH} #{PART_1} #{PART_2} #{UNAVAIL} #{PART_4}")
     assert(s == 0)
     old_xml, e, s = Open3.capture3("cat #{CANONICAL_XML}")
     new_xml_a = new_xml.split("\n")

@@ -11,6 +11,16 @@
 # - assert that all required files are present
 # - emit each portion of the METS document to stdout
 #------------------------------------------------------------------------------
+PART_DELIMITER  = ':'
+UNAVAILABLE_STR = 'UNAVAIL'
+
+class Part
+  attr_reader :mptr, :orderlabel
+  def initialize(str)
+    x, @orderlabel = str.split(PART_DELIMITER)
+    @mptr = (x == UNAVAILABLE_STR ? nil : x)
+  end
+end
 
 #------------------------------------------------------------------------------
 # XML emit methods:
@@ -161,8 +171,25 @@ def emit_struct_map_div_close
   puts "      </div>"
 end
 
-def emit_struct_map_inner_div_open
-  puts %{        <div TYPE="INTELLECTUAL_ENTITY" ID="s-ie-00000001" DMDID="dmd-00000001 dmd-00000002" ADMID="rmd-00000001">}
+def emit_mptr(mptr)
+  puts %Q{                <mptr LOCTYPE="URL" xlink:type="simple" xlink:href="#{mptr}"/>}
+end
+
+def emit_struct_map_part_divs(parts)
+  parts.each_index do |idx|
+    p = parts[idx]
+    emit_struct_map_inner_div_open({order: idx + 1, orderlabel: p.orderlabel})
+    emit_mptr(p.mptr) unless p.mptr.nil?
+    emit_struct_map_inner_div_close
+  end
+end
+
+def emit_struct_map_inner_div_open(h)
+  o    = h[:order]
+  ol   = h[:orderlabel]
+  ostr = %Q{ORDER="#{o}"}
+  ostr += %Q{ ORDERLABEL="#{ol}"} unless ol.nil?
+  puts %Q{        <div TYPE="INTELLECTUAL_ENTITY" ID="s-ie-#{sprintf("%08d", o)}" DMDID="dmd-00000001 dmd-00000002" ADMID="rmd-00000001" #{ostr}>}
 end
 
 def emit_struct_map_inner_div_close
@@ -185,7 +212,7 @@ end
 #------------------------------------------------------------------------------
 # utility / validation / extraction methods:
 #------------------------------------------------------------------------------
-def get_md_file_inventory(dir)
+def get_required_files(dir)
   inventory = {
     mods:        '_mods.xml',
     marcxml:     '_marcxml.xml',
@@ -207,13 +234,16 @@ def get_md_file_inventory(dir)
   fhash
 end
 
+def extract_parts(array)
+  array.collect {|p| Part.new(p)}
+end
 
 def print_usage
-  $stderr.puts "Usage: #{$0} <object id> <path to ie> <mptr 1> [<mptr 2>|'MISSING' ...]"
+  $stderr.puts "Usage: #{$0} <object id> <path to ie> <part 1> [<part 2>|'UNAVAIL' ...]"
   $stderr.puts "   <object id>   : R* identifier. Will be inserted into METS @OBJID"
   $stderr.puts "   <path to ie>  : path to the directory containing the IE files"
-  $stderr.puts "   <mptr 1>      : METS mptr string pointing to the first Source Entity structMap"
-  $stderr.puts "   <mptr 2...n>  : METS mptr string pointing to the second Source Entity structMap"
+  $stderr.puts "   <part 1>      "
+  $stderr.puts "   <part 2...n>  "
   $stderr.puts "   'UNAVAIL'     : this portion of the intellectual entity is not available"
   $stderr.puts "   e.g., "
   $stderr.puts "   ruby #{$0} '6efa1021-7453-4150-8d4a-705899530d8e' /path/to/ie 'nyu_aco000177_mets.xml#s-ie-00000001' 'UNAVAIL' 'nyu_aco000179_mets.xml#s-ie-00000001'"
@@ -222,11 +252,11 @@ end
 #------------------------------------------------------------------------------
 # obj_id     = ARGV[0]
 # src_dir    = ARGV[1]
-# mptr_1     = ARGV[2]
-# [mptr_2    = ARGV[3]]
-# [mptr_3    = ARGV[4]]
+# part_1     = ARGV[2]
+# [part_2    = ARGV[3]]
+# [part_3    = ARGV[4]]
 # ...
-# [mptr_n    = ARGV[n + 1]]
+# [part_n    = ARGV[n + 1]]
 #..............................................................................
 def validate_and_extract_args(args_in)
 
@@ -253,15 +283,14 @@ def validate_and_extract_args(args_in)
     exit 1
   end
 
-  # extract list of mptrs
-  args_out[:mptrs] = args_in[2..-1]
+  # extract list of parts
+  args_out[:parts] = extract_parts(args_in[2..-1])
 
   begin
-    md_files = get_md_file_inventory(args_out[:dir])
+    args_out[:required_files] = get_required_files(args_out[:dir])
   rescue Exception => e
     errors << "problem with metadata files: #{e.message}"
   end
-  args_out[:md_files] = md_files
 
   unless errors.empty?
     estr = errors.join("\n")
@@ -279,7 +308,7 @@ end
 #------------------------------------------------------------------------------
 args = validate_and_extract_args(ARGV)
 
-md_files = args[:md_files]
+required_files = args[:required_files]
 emit_xml_header
 emit_mets_open(args[:obj_id])
 emit_template_version
@@ -288,16 +317,14 @@ emit_agent({role: "DISSEMINATOR", type: "ORGANIZATION", name: "New York Universi
 emit_agent({role: "CREATOR", type: "INDIVIDUAL", name: "Joseph G. Pawletko"})
 emit_alt_record_id({type: "NYU-DL-RSTAR", id: args[:obj_id]})
 emit_mets_hdr_close
-emit_dmd_marcxml(md_files[:marcxml])
-emit_dmd_mods(md_files[:mods])
+emit_dmd_marcxml(required_files[:marcxml])
+emit_dmd_mods(required_files[:mods])
 emit_amd_sec_open
-emit_rights_md(md_files[:metsrights])
+emit_rights_md(required_files[:metsrights])
 emit_amd_sec_close
 emit_struct_map_open
 emit_struct_map_div_open
-emit_struct_map_inner_div_open
-#emit_struct_map_slot_divs(args[:slot_list])
-emit_struct_map_inner_div_close
+emit_struct_map_part_divs(args[:parts])
 emit_struct_map_div_close
 emit_struct_map_close
 emit_mets_close
