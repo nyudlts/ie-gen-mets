@@ -12,7 +12,7 @@ class TestIeGenMets < Test::Unit::TestCase
   UNAVAIL = 'UNAVAIL:V3'
   PART_4  = 'nyu_aco000180_mets.xml#s-ie-00000001:V4'
 
-  def test_exit_status_with_valid_text
+  def test_exit_status_with_valid_ie
     o, e, s = Open3.capture3("#{COMMAND} '6efa1021-7453-4150-8d4a-705899530d8e' #{VALID_IE_PATH} #{PART_1} #{PART_2} #{UNAVAIL} #{PART_4}")
     assert(s == 0, "incorrect exit status")
     assert_match(/<mets xmlns/, o, "no mets output detected")
@@ -41,7 +41,7 @@ class TestIeGenMets < Test::Unit::TestCase
     assert_match(/missing or too many files ending in _metsrights\.xml/, e)
   end
 
-  def test_output_with_valid_text
+  def test_output_with_valid_ie
     new_xml, e, s = Open3.capture3("#{COMMAND} '6efa1021-7453-4150-8d4a-705899530d8e' #{VALID_IE_PATH} #{PART_1} #{PART_2} #{UNAVAIL} #{PART_4}")
     assert(s == 0)
     old_xml, e, s = Open3.capture3("cat #{CANONICAL_XML}")
