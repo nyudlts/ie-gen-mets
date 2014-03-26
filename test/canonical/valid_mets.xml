@@ -2,7 +2,8 @@
 <mets xmlns="http://www.loc.gov/METS/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/version191/mets.xsd" xmlns:xlink="http://www.w3.org/1999/xlink"
     xmlns:mods="http://www.loc.gov/mods/v3" OBJID="6efa1021-7453-4150-8d4a-705899530d8e">
-    <metsHdr CREATEDATE="2014-03-05T17:17:15" LASTMODDATE="2014-03-05T17:17:15" RECORDSTATUS="DRAFT">
+    <?ie-wip-template version="info:nyu/dl/v1.0/templates/ie/wip/v0.0.1"?>
+    <metsHdr CREATEDATE="2014-03-05T17:17:15Z" LASTMODDATE="2014-03-05T17:17:15Z" RECORDSTATUS="DRAFT">
         <agent ROLE="DISSEMINATOR" TYPE="ORGANIZATION">
             <name>New York University Libraries</name>
 	</agent>

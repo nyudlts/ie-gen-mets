@@ -86,7 +86,7 @@ def emit_dmd_mods(fname)
 end
 
 def emit_amd_sec_open
-  puts "    <amdSec>"
+  puts %{    <amdSec ID="amd-00000001">}
 end
 
 def emit_amd_sec_close
@@ -145,8 +145,8 @@ def emit_file_grp_close
   puts %{        </fileGrp>}
 end
 
-def emit_struct_map_open(h)
-  puts %|    <structMap ID="smd-00000001" TYPE="#{h[:se_type]} BINDING_ORIENTATION:#{h[:binding]} SCAN_ORDER:#{h[:scan_order]} READ_ORDER:#{h[:read_order]}"> |
+def emit_struct_map_open
+  puts %|    <structMap ID="smd-00000001" TYPE="INTELLECTUAL_ENTITY"> |
 end
 
 def emit_struct_map_close
@@ -293,7 +293,7 @@ emit_dmd_mods(md_files[:mods])
 emit_amd_sec_open
 emit_rights_md(md_files[:metsrights])
 emit_amd_sec_close
-emit_struct_map_open(args)
+emit_struct_map_open
 emit_struct_map_div_open
 emit_struct_map_inner_div_open
 #emit_struct_map_slot_divs(args[:slot_list])
