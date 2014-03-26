@@ -21,12 +21,12 @@
 #### input:
 - object identifier
 - "part" strings, in sequential order.
-  - a "part" string consists of two components delimited by a ':',
-    - the first part is either a [METS](http://www.loc.gov/standards/mets/) mptr string that points to the correct portion of a source entity structMap,
+  - a "part" string consists of two components delimited by a ':'
+    - the first component is either a [METS](http://www.loc.gov/standards/mets/) mptr string that points to the correct portion of a source entity structMap,
 	  or the string 'UNAVAIL', which indicates that this portion of the intellectual entity is not available.
-	- the second part of the part string is the "ORDERLABEL" attribute, e.g., 'V1', 'V2'
-	  the order label attribute is OPTIONAL
-  - for an explanation of Source Entities and Intellectual Entities as used above, please see (https://github.com/NYULibraries/aco-mets)
+	- the second component is the "ORDERLABEL" attribute, e.g., 'V1', 'V2'
+	  - N.B. the ORDERLABEL attribute is **OPTIONAL**
+  - for an explanation of Source Entities and Intellectual Entities as used above, please see https://github.com/NYULibraries/aco-mets
     
 
 #### output:
