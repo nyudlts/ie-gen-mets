@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mets xmlns="http://www.loc.gov/METS/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/version191/mets.xsd" xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:mods="http://www.loc.gov/mods/v3" OBJID="6efa1021-7453-4150-8d4a-705899530d8e">
+    <?ie-wip-template version="info:nyu/dl/v1.0/templates/ie/wip/v0.0.1"?>
+    <metsHdr CREATEDATE="2014-03-05T17:17:15Z" LASTMODDATE="2014-03-05T17:17:15Z" RECORDSTATUS="DRAFT">
+        <agent ROLE="DISSEMINATOR" TYPE="ORGANIZATION">
+            <name>New York University Libraries</name>
+	</agent>
+        <agent ROLE="CREATOR" TYPE="INDIVIDUAL">
+            <name>Joseph G. Pawletko</name>
+	</agent>
+        <altRecordID TYPE="NYU-DL-RSTAR">6efa1021-7453-4150-8d4a-705899530d8e</altRecordID>
+    </metsHdr>
+    <dmdSec ID="dmd-00000001">
+        <mdRef LOCTYPE="URL" MDTYPE="OTHER" OTHERMDTYPE="MARCXML" xlink:type="simple" xlink:href="6efa1021-7453-4150-8d4a-705899530d8e_marcxml.xml"/>
+    </dmdSec>
+    <dmdSec ID="dmd-00000002">
+        <mdRef LOCTYPE="URL" MDTYPE="MODS" xlink:type="simple" xlink:href="6efa1021-7453-4150-8d4a-705899530d8e_mods.xml"/>
+    </dmdSec>
+    <amdSec ID="amd-00000001">
+        <rightsMD ID="rmd-00000001">
+            <mdRef LOCTYPE="URL" MDTYPE="METSRIGHTS" xlink:type="simple" xlink:href="6efa1021-7453-4150-8d4a-705899530d8e_metsrights.xml"/>
+	</rightsMD>
+    </amdSec>
+    <structMap ID="smd-00000001" TYPE="INTELLECTUAL_ENTITY">
+        <div>
+            <div TYPE="INTELLECTUAL_ENTITY" ID="s-ie-00000001" DMDID="dmd-00000001 dmd-00000002" ADMID="rmd-00000001" ORDER="1" ORDERLABEL="V1">
+                <mptr LOCTYPE="URL" xlink:type="simple" xlink:href="nyu_aco000177_mets.xml#s-ie-00000001"/>
+	    </div>
+            <div TYPE="INTELLECTUAL_ENTITY" ID="s-ie-00000002" DMDID="dmd-00000001 dmd-00000002" ADMID="rmd-00000001" ORDER="2" ORDERLABEL="V2">
+                <mptr LOCTYPE="URL" xlink:type="simple" xlink:href="nyu_aco000178_mets.xml#s-ie-00000001"/>
+	    </div>
+            <div TYPE="INTELLECTUAL_ENTITY" ID="s-ie-00000003" DMDID="dmd-00000001 dmd-00000002" ADMID="rmd-00000001" ORDER="3" ORDERLABEL="V3">
+	    </div>
+            <div TYPE="INTELLECTUAL_ENTITY" ID="s-ie-00000004" DMDID="dmd-00000001 dmd-00000002" ADMID="rmd-00000001" ORDER="4" ORDERLABEL="V4">
+                <mptr LOCTYPE="URL" xlink:type="simple" xlink:href="nyu_aco000180_mets.xml#s-ie-00000001"/>
+	    </div>
+	</div>
+    </structMap>
+</mets>
+
