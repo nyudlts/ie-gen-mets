@@ -20,8 +20,14 @@
 
 #### input:
 - object identifier
-- [METS](http://www.loc.gov/standards/mets/) mptr strings, in sequential order, that point to the correct intellectual entity in the source entity structMap OR the string "UNAVAIL" to indicate that a portion of the intellectual entity is not available 
+- "part" strings, in sequential order.
+  - a "part" string consists of two components delimited by a ':',
+    - the first part is either a [METS](http://www.loc.gov/standards/mets/) mptr string that points to the correct portion of a source entity structMap,
+	  or the string 'UNAVAIL', which indicates that this portion of the intellectual entity is not available.
+	- the second part of the part string is the "ORDERLABEL" attribute, e.g., 'V1', 'V2'
+	  the order label attribute is OPTIONAL
   - for an explanation of Source Entities and Intellectual Entities as used above, please see (https://github.com/NYULibraries/aco-mets)
+    
 
 #### output:
 - METS XML for the specified DLTS Intellectual Entity object
@@ -30,13 +36,13 @@
 
 #### Invocation Template
 ```
-ruby ie-gen-mets.rb <objid> <mptr 1> [<mptr 2> ... <mptr n>]
+ruby ie-gen-mets.rb <objid> <part 1> [<part 2> ... <part n>]
 ```
 
 
 #### Example structMap generated when script invoked with "UNAVAIL" parameter
 ```
-$ ruby ie-gen-mets.rb '2d1daa7a-4a1f-44c3-a771-fc21b83bd06e'  'nyu_aco000177_mets.xml#s-ie-00000001' 'UNAVAIL' 'nyu_aco000179_mets.xml#s-ie-00000001'
+$ ruby ie-gen-mets.rb '2d1daa7a-4a1f-44c3-a771-fc21b83bd06e'  'nyu_aco000177_mets.xml#s-ie-00000001:V1' 'UNAVAIL:V2' 'nyu_aco000179_mets.xml#s-ie-00000001:V3'
 ```
 
 ```
