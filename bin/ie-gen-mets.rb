@@ -300,3 +300,9 @@ emit_struct_map_close
 emit_mets_close
 
 exit 0
+
+=begin
+TODO:
+emit struct map
+add all tests
+=end
