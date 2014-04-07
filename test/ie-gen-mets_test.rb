@@ -1,7 +1,7 @@
-require 'test/unit'
+require 'test_helper'
 require 'open3'
 
-class TestIeGenMets < Test::Unit::TestCase
+class TestIeGenMets < MiniTest::Unit::TestCase
 
   COMMAND  = 'ruby bin/ie-gen-mets.rb'
   VALID_IE_PATH = 'test/ies/valid'
