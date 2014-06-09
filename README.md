@@ -36,13 +36,13 @@
 
 #### Invocation Template
 ```
-ruby ie-gen-mets.rb <objid> <part 1> [<part 2> ... <part n>]
+ruby ie-gen-mets.rb <objid> <path/to/conforming/ie/dir> <part 1> [<part 2> ... <part n>]
 ```
 
 
 #### Example structMap generated when script invoked with "UNAVAIL" parameter
 ```
-$ ruby ie-gen-mets.rb '2d1daa7a-4a1f-44c3-a771-fc21b83bd06e'  'nyu_aco000177_mets.xml#s-ie-00000001:V1' 'UNAVAIL:V2' 'nyu_aco000179_mets.xml#s-ie-00000001:V3'
+$ ruby ie-gen-mets.rb '2d1daa7a-4a1f-44c3-a771-fc21b83bd06e' '2d1daa7a-4a1f-44c3-a771-fc21b83bd06e/data' 'nyu_aco000177_mets.xml#s-ie-00000001:V1' 'UNAVAIL:V2' 'nyu_aco000179_mets.xml#s-ie-00000001:V3'
 ```
 
 ```
