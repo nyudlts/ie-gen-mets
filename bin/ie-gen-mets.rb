@@ -17,7 +17,7 @@ UNAVAILABLE_STR = 'UNAVAIL'
 class Part
   attr_reader :mptr, :orderlabel
   def initialize(str)
-    x, @orderlabel = str.split(PART_DELIMITER)
+    x, @orderlabel = str.split(PART_DELIMITER,2)
     @mptr = (x == UNAVAILABLE_STR ? nil : x)
   end
 end
