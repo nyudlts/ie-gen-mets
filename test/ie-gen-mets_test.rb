@@ -1,7 +1,7 @@
 require 'test_helper'
 require 'open3'
 
-class TestIeGenMets < MiniTest::Unit::TestCase
+class TestIeGenMets < MiniTest::Test
 
   COMMAND  = 'ruby bin/ie-gen-mets.rb'
   VALID_IE_PATH = 'test/fixtures/ies/valid'
@@ -20,7 +20,7 @@ class TestIeGenMets < MiniTest::Unit::TestCase
 
 
   def test_exit_status_with_valid_ie
-    o, e, s = Open3.capture3("#{COMMAND} '6efa1021-7453-4150-8d4a-705899530d8e' #{VALID_IE_PATH} #{PART_1} #{PART_2} #{UNAVAIL} #{PART_4}")
+    o, _, s = Open3.capture3("#{COMMAND} '6efa1021-7453-4150-8d4a-705899530d8e' #{VALID_IE_PATH} #{PART_1} #{PART_2} #{UNAVAIL} #{PART_4}")
     assert(s == 0, "incorrect exit status")
     assert_match(/<mets xmlns/, o, "no mets output detected")
   end
