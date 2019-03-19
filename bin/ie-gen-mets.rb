@@ -216,7 +216,7 @@ def get_required_files(dir)
   inventory = {
     mods:        '_mods.xml',
     marcxml:     '_marcxml.xml',
-    metsrights:  '_metsrights.xml',
+    metsrights:  '_metsrights.xml'
   }
 
   fhash  = {}
