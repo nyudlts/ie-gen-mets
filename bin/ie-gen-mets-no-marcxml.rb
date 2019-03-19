@@ -1,5 +1,6 @@
 #------------------------------------------------------------------------------
 # script generates METS files for NYU DLTS Intellectual Entities
+# for IEs without MARCXML
 #
 # invocation:
 # - see "print_usage" method
@@ -83,14 +84,8 @@ def emit_agent(h)
   puts %Q{        </agent>}
 end
 
-def emit_dmd_marcxml(fname)
-  puts %{    <dmdSec ID="dmd-00000001">}
-  puts %{        <mdRef LOCTYPE="URL" MDTYPE="OTHER" OTHERMDTYPE="MARCXML" xlink:type="simple" xlink:href="#{fname}"/>}
-  puts %{    </dmdSec>}
-end
-
 def emit_dmd_mods(fname)
-  puts %{    <dmdSec ID="dmd-00000002">}
+  puts %{    <dmdSec ID="dmd-00000001">}
   puts %{        <mdRef LOCTYPE="URL" MDTYPE="MODS" xlink:type="simple" xlink:href="#{fname}"/>}
   puts %{    </dmdSec>}
 end
@@ -117,14 +112,6 @@ def emit_file_sec_close
   puts "    </fileSec>"
 end
 
-def emit_file_grp_master_open
-  puts %{        <fileGrp ID="fg-master" USE="MASTER" ADMID="dpmd-00000001 dmd-00000002">}
-end
-
-def emit_file_grp_dmaker_open
-  puts %{        <fileGrp ID="fg-dmaker" USE="DMAKER">}
-end
-
 def emit_file(fname)
   match = /(.+)\.tif\z/.match(fname)
   raise "badly formed filename #{fname}" unless match
@@ -149,10 +136,6 @@ def get_files(dir, pattern, exclude = nil)
     final_list << File.basename(f)
   end
   final_list.sort!
-end
-
-def emit_file_grp_close
-  puts %{        </fileGrp>}
 end
 
 def emit_struct_map_open
@@ -189,7 +172,7 @@ def emit_struct_map_inner_div_open(h)
   ol   = h[:orderlabel]
   ostr = %Q{ORDER="#{o}"}
   ostr += %Q{ ORDERLABEL="#{ol}"} unless ol.nil?
-  puts %Q{        <div TYPE="INTELLECTUAL_ENTITY" ID="s-ie-#{sprintf("%08d", o)}" DMDID="dmd-00000001 dmd-00000002" ADMID="rmd-00000001" #{ostr}>}
+  puts %Q{        <div TYPE="INTELLECTUAL_ENTITY" ID="s-ie-#{sprintf("%08d", o)}" DMDID="dmd-00000001" ADMID="rmd-00000001" #{ostr}>}
 end
 
 def emit_struct_map_inner_div_close
@@ -212,10 +195,18 @@ end
 #------------------------------------------------------------------------------
 # utility / validation / extraction methods:
 #------------------------------------------------------------------------------
+
+# this function asserts that the MARCXML file is not present.
+# this prevents using this script for "standard" IEs
+def assert_no_marcxml(dir)
+  if Dir.glob(File.join(dir, "*_marcxml.xml")).length != 0
+    raise "_marcxml.xml file detected. This script if for MODS-only IEs"
+  end
+end
+
 def get_required_files(dir)
   inventory = {
     mods:        '_mods.xml',
-    marcxml:     '_marcxml.xml',
     metsrights:  '_metsrights.xml'
   }
 
@@ -287,6 +278,7 @@ def validate_and_extract_args(args_in)
   args_out[:parts] = extract_parts(args_in[2..-1])
 
   begin
+    assert_no_marcxml(args_out[:dir])
     args_out[:required_files] = get_required_files(args_out[:dir])
   rescue Exception => e
     errors << "problem with metadata files: #{e.message}"
@@ -317,7 +309,6 @@ emit_agent({role: "DISSEMINATOR", type: "ORGANIZATION", name: "New York Universi
 emit_agent({role: "CREATOR", type: "INDIVIDUAL", name: "Joseph G. Pawletko"})
 emit_alt_record_id({type: "NYU-DL-RSTAR", id: args[:obj_id]})
 emit_mets_hdr_close
-emit_dmd_marcxml(required_files[:marcxml])
 emit_dmd_mods(required_files[:mods])
 emit_amd_sec_open
 emit_rights_md(required_files[:metsrights])
@@ -331,8 +322,3 @@ emit_mets_close
 
 exit 0
 
-=begin
-TODO:
-emit struct map
-add all tests
-=end
