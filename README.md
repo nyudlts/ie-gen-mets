@@ -61,3 +61,6 @@ $ ruby ie-gen-mets.rb '2d1daa7a-4a1f-44c3-a771-fc21b83bd06e' '2d1daa7a-4a1f-44c3
     </structMap>
 ...
 ```
+
+## Testing
+`$ rake`
